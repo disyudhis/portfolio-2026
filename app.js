@@ -289,16 +289,130 @@
   modal.addEventListener("click", function (e) { if (e.target === modal) modal.close(); });
 
   /* ---- Layanan & testimoni ---- */
-  function renderServices(d) {
-    $("#services").innerHTML = d.services.map(function (s) {
-      var msg = "Halo, aku tertarik dengan layanan \"" + s.title + "\".";
-      return '<article class="svc' + (s.featured ? " feat" : "") + '">' +
-        "<h3>" + esc(s.title) + '</h3><div class="price">' + esc(s.price) + "</div>" +
-        "<p>" + esc(s.desc) + "</p><ul>" +
-        s.items.map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>" +
-        '<a class="btn" target="_blank" rel="noopener" href="' + waLink(d, msg) + '" data-track="service-' + esc(s.title) + '">Tanya layanan ini</a>' +
-        "</article>";
-    }).join("");
+    function renderServices(d) {
+    var box = $("#services");
+    box.className = "lab";
+    var S = d.services, cur = 0, shown = 0, raf = 0;
+    var st = S.map(function (s) { return { v: 0, q: s.qty ? s.qty.default : 1, a: {} }; });
+
+    var rp = function (n) { return "Rp " + Math.round(n).toLocaleString("id-ID"); };
+    var rs = function (n) { return n >= 1e6 ? "Rp " + String(n / 1e6).replace(".", ",") + " jt" : "Rp " + Math.round(n / 1000) + " rb"; };
+    var minPrice = function (s) {
+      if (s.variants) { var ps = s.variants.map(function (v) { return v.price; }).filter(function (x) { return x != null; }); return ps.length ? Math.min.apply(null, ps) : null; }
+      return s.base;
+    };
+
+    function calc(i) {
+      var s = S[i], x = st[i], v = s.variants ? s.variants[x.v] : null, base = v ? v.price : s.base;
+      var qty = s.qty ? x.q : 1, lines = [];
+      if (base == null) return { total: null, lines: [], qty: qty, v: v };
+      var total = base * qty;
+      lines.push([(v ? v.label : s.title) + (s.qty ? " x " + qty : ""), base * qty]);
+      (s.addons || []).forEach(function (a) {
+        if (!x.a[a.id]) return;
+        var p = a.price * (a.perUnit ? qty : 1);
+        total += p; lines.push([a.label, p]);
+      });
+      return { total: total, lines: lines, qty: qty, v: v };
+    }
+
+    box.innerHTML =
+      '<div class="lab-tabs" role="tablist" aria-label="Pilih layanan">' +
+      S.map(function (s, i) {
+        var mp = minPrice(s);
+        return '<button class="lab-tab" role="tab" data-i="' + i + '" aria-selected="' + (i === 0) + '"><b>' + esc(s.title) + "</b><span>" +
+          esc(s.tagline) + (mp != null ? ", mulai " + rs(mp) : "") + "</span></button>";
+      }).join("") + '</div><div class="lab-panel" id="labPanel"></div>';
+    var panel = $("#labPanel");
+
+    function renderPanel(i) {
+      var s = S[i], x = st[i];
+      var h = '<div class="lab-main"><p class="lab-desc">' + esc(s.desc) + '</p><ul class="lab-items">' +
+        s.items.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>";
+      if (s.variants) {
+        h += '<fieldset class="lab-group"><legend>Jenis website</legend><div class="pills">' +
+          s.variants.map(function (v, k) {
+            return '<label class="pill"><input type="radio" name="variant" value="' + k + '"' + (k === x.v ? " checked" : "") + "><span>" + esc(v.label) +
+              "<em>" + (v.price != null ? rs(v.price) : "sesuai brief") + "</em></span></label>";
+          }).join("") + "</div></fieldset>";
+      }
+      if (s.qty) {
+        h += '<div class="lab-group"><span class="lab-label">' + esc(s.qty.label) + '</span><div class="stepper">' +
+          '<button type="button" data-q="-1" aria-label="Kurangi jumlah">−</button><output id="qtyOut"></output>' +
+          '<button type="button" data-q="1" aria-label="Tambah jumlah">+</button></div></div>';
+      }
+      if (s.addons && s.addons.length) {
+        h += '<fieldset class="lab-group"><legend>Tambahan</legend><div class="pills">' +
+          s.addons.map(function (a) {
+            return '<label class="pill"><input type="checkbox" value="' + esc(a.id) + '"' + (x.a[a.id] ? " checked" : "") + "><span>" + esc(a.label) +
+              "<em>+" + rs(a.price) + (a.perUnit ? " /video" : "") + "</em></span></label>";
+          }).join("") + "</div></fieldset>";
+      }
+      h += '</div><aside class="lab-est"><span class="est-label">Estimasi harga</span><output class="est-num" id="estNum" aria-live="polite"></output>' +
+        '<ul class="est-sum" id="estSum"></ul><p class="est-note" id="estNote"></p>' +
+        '<a class="btn" id="estCta" target="_blank" rel="noopener" data-track="lab-wa">Kirim estimasi ke WhatsApp</a></aside>';
+      panel.innerHTML = h;
+      panel.style.animation = "none"; void panel.offsetWidth; panel.style.animation = "";
+      shown = 0;
+      update(true);
+    }
+
+    function update(first) {
+      var s = S[cur], x = st[cur], c = calc(cur);
+      if (s.qty) {
+        $("#qtyOut").textContent = x.q + " " + s.qty.unit;
+        panel.querySelector('[data-q="-1"]').disabled = x.q <= s.qty.min;
+        panel.querySelector('[data-q="1"]').disabled = x.q >= s.qty.max;
+      }
+      $("#estSum").innerHTML = c.lines.map(function (l) {
+        return "<li><span>" + esc(l[0]) + "</span><span>" + rp(l[1]) + "</span></li>";
+      }).join("");
+      $("#estNote").textContent = c.total == null
+        ? "Custom web dihitung dari kebutuhan. Ceritakan project-mu lewat WhatsApp."
+        : "Harga awal. Angka final menyesuaikan brief dan footage.";
+
+      var out = $("#estNum");
+      cancelAnimationFrame(raf);
+      if (c.total == null) { out.textContent = "Sesuai brief"; shown = 0; }
+      else if (reduce || shown === c.total) { out.textContent = rp(c.total); shown = c.total; }
+      else {
+        var from = shown, to = c.total, t0 = performance.now();
+        (function step(now) {
+          var k = Math.min(1, (now - t0) / 380), e = 1 - Math.pow(1 - k, 3);
+          shown = from + (to - from) * e; out.textContent = rp(shown);
+          if (k < 1) raf = requestAnimationFrame(step); else shown = to;
+        })(t0);
+      }
+
+      var msg = "Halo, aku mau tanya layanan " + s.title + (c.v ? " (" + c.v.label + ")" : "") + ".";
+      if (s.qty) msg += "\nJumlah: " + x.q + " " + s.qty.unit;
+      var ad = (s.addons || []).filter(function (a) { return x.a[a.id]; }).map(function (a) { return a.label; });
+      if (ad.length) msg += "\nTambahan: " + ad.join(", ");
+      msg += "\nEstimasi: " + (c.total == null ? "sesuai brief" : rp(c.total)) + "\nBisa diskusi?";
+      $("#estCta").href = waLink(d, msg);
+    }
+
+    box.querySelector(".lab-tabs").addEventListener("click", function (e) {
+      var b = e.target.closest(".lab-tab");
+      if (!b || +b.getAttribute("data-i") === cur) return;
+      cur = +b.getAttribute("data-i");
+      box.querySelectorAll(".lab-tab").forEach(function (t) { t.setAttribute("aria-selected", t === b); });
+      renderPanel(cur);
+    });
+    panel.addEventListener("click", function (e) {
+      var q = e.target.closest("[data-q]");
+      if (!q) return;
+      var s = S[cur], x = st[cur];
+      x.q = Math.max(s.qty.min, Math.min(s.qty.max, x.q + +q.getAttribute("data-q")));
+      update();
+    });
+    panel.addEventListener("change", function (e) {
+      var t = e.target, x = st[cur];
+      if (t.name === "variant") x.v = +t.value;
+      else if (t.type === "checkbox") x.a[t.value] = t.checked;
+      update();
+    });
+    renderPanel(0);
   }
 
   function renderTestimonials(d) {

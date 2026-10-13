@@ -1494,3 +1494,301 @@ dialog::backdrop {
   background: var(--paper);
   color: #000
 }
+
+/* ---------- Layanan interaktif ---------- */
+.lab {
+  display: grid;
+  gap: 22px
+}
+
+.lab-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px
+}
+
+.lab-tab {
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px 24px 26px;
+  cursor: pointer;
+  transition: background .25s, color .25s, border-color .25s, transform .25s
+}
+
+.lab-tab:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px)
+}
+
+.lab-tab b {
+  display: block;
+  font-weight: 500;
+  font-size: clamp(22px, 2.4vw, 30px);
+  letter-spacing: -.03em;
+  line-height: 1.1
+}
+
+.lab-tab span {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--text2)
+}
+
+.lab-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 0;
+  background: var(--orange);
+  transition: width .35s
+}
+
+.lab-tab[aria-selected="true"] {
+  background: var(--navy);
+  color: var(--paper);
+  border-color: var(--navy);
+  transform: none
+}
+
+.lab-tab[aria-selected="true"] span {
+  color: #BFCBD4
+}
+
+.lab-tab[aria-selected="true"]::after {
+  width: 100%
+}
+
+.lab-panel {
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 22px;
+  align-items: start;
+  animation: labin .35s ease-out
+}
+
+@keyframes labin {
+  from {
+    opacity: 0;
+    transform: translateY(10px)
+  }
+}
+
+.lab-main {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: clamp(22px, 3vw, 34px);
+  display: grid;
+  gap: 24px
+}
+
+.lab-desc {
+  color: var(--text2);
+  font-size: 18px
+}
+
+.lab-items {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px 20px
+}
+
+.lab-items li {
+  padding-left: 24px;
+  position: relative;
+  font-size: 15px
+}
+
+.lab-items li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .8em;
+  width: 14px;
+  height: 2px;
+  background: var(--orange)
+}
+
+.lab-group {
+  border: 0;
+  display: grid;
+  gap: 10px;
+  min-width: 0
+}
+
+.lab-group legend, .lab-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text2);
+  padding: 0
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px
+}
+
+.pill {
+  position: relative;
+  cursor: pointer
+}
+
+.pill input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer
+}
+
+.pill span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 15px;
+  transition: background .2s, border-color .2s
+}
+
+.pill em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--text2)
+}
+
+.pill:hover span {
+  border-color: var(--ink)
+}
+
+.pill input:checked+span {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #000
+}
+
+.pill input:checked+span em {
+  color: #000;
+  opacity: .7
+}
+
+.pill input:focus-visible+span {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  width: max-content
+}
+
+.stepper button {
+  width: 46px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 22px/1 var(--font);
+  cursor: pointer
+}
+
+.stepper button:hover:not(:disabled) {
+  background: var(--soft)
+}
+
+.stepper button:disabled {
+  opacity: .3;
+  cursor: default
+}
+
+.stepper output {
+  min-width: 96px;
+  text-align: center;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums
+}
+
+.lab-est {
+  position: sticky;
+  top: 96px;
+  background: var(--navy);
+  color: var(--paper);
+  border-radius: var(--r);
+  padding: clamp(22px, 3vw, 34px);
+  display: grid;
+  gap: 10px
+}
+
+.est-label {
+  font-size: 14px;
+  color: #BFCBD4
+}
+
+.est-num {
+  display: block;
+  font-size: clamp(34px, 4.4vw, 52px);
+  font-weight: 500;
+  letter-spacing: -.04em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums
+}
+
+.est-sum {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: #BFCBD4;
+  border-top: 1px solid rgba(234, 236, 240, .18);
+  padding-top: 12px;
+  margin-top: 4px
+}
+
+.est-sum li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px
+}
+
+.est-sum li span:last-child {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap
+}
+
+.est-note {
+  font-size: 14px;
+  color: #BFCBD4;
+  margin-bottom: 8px
+}
+
+.lab-est .btn {
+  text-align: center
+}
+
+@media (max-width:860px) {
+  .lab-panel {
+    grid-template-columns: 1fr
+  }
+
+  .lab-est {
+    position: static
+  }
+}
