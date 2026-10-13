@@ -9,7 +9,7 @@ window.PORTFOLIO = {
     brand: "My Porto",                           // teks di navbar
     role: "Web Developer & Video Editor",
     whatsapp: "6282229134746",
-    email: "",                                   // isi kalau mau ditampilkan
+    email: "yudhistiraharyatmakas@gmail.com",                                   // isi kalau mau ditampilkan
     instagram: "https://instagram.com/disyudhis",
     instagramHandle: "@disyudhis",
     tiktok: "https://www.tiktok.com/@disyudhis",
@@ -31,13 +31,13 @@ window.PORTFOLIO = {
   // Nomor klip (01, 02, ...) mengikuti urutan array ini.
   // `link` = URL Reels / TikTok video tersebut. Kalau kosong, tombol memakai link Instagram profil.
   projects: [
-    { id: "v01", type: "video", category: "challenge",     title: "Challenge Video", client: "Voxnative",             thumb: "assets/thumbs/voxtrivia.jpg",          views: "7.2K views", link: "" },
-    { id: "v02", type: "video", category: "review",        title: "Review Video",    client: "Voxnative",             thumb: "assets/thumbs/voxtizen.jpg",           views: "4.7K views", link: "" },
-    { id: "v03", type: "video", category: "cinematic",     title: "Cinematic",       client: "The Papandayan",        thumb: "assets/thumbs/papandayan-jazzfest.jpg", views: "4K views",   link: "" },
-    { id: "v04", type: "video", category: "challenge",     title: "Challenge",       client: "One Education Center",  thumb: "assets/thumbs/oec-ellena-alena.jpg",   views: "",           link: "" },
-    { id: "v05", type: "video", category: "talking-heads", title: "Talking Heads",   client: "One Education Center",  thumb: "assets/thumbs/oec-trevor.jpg",         views: "",           link: "" },
-    { id: "v06", type: "video", category: "talking-heads", title: "Talking Heads",   client: "One Education Center",  thumb: "assets/thumbs/oec-leander.jpg",        views: "",           link: "" },
-    { id: "v07", type: "video", category: "cinematic",     title: "Cinematic",       client: "One Education Center",  thumb: "assets/thumbs/oec-belajar.jpg",        views: "",           link: "" }
+    { id: "v01", type: "video", category: "challenge",     title: "Challenge Video", client: "Voxnative",             thumb: "assets/thumbs/voxtrivia.jpg",          views: "", link: "https://www.instagram.com/reel/Dd_wDuYPIb3/?utm_source=ig_web_copy_link&cplk=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==" },
+    { id: "v02", type: "video", category: "review",        title: "Review Video",    client: "Voxnative",             thumb: "assets/thumbs/voxtizen.jpg",           views: "", link: "https://www.instagram.com/reel/DeJoIsovlrF/?utm_source=ig_web_copy_link&vrfl=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==" },
+    { id: "v03", type: "video", category: "cinematic",     title: "Cinematic",       client: "The Papandayan",        thumb: "assets/thumbs/papandayan-jazzfest.jpg", views: "",   link: "https://www.instagram.com/reel/DeOygEfvaO8/?utm_source=ig_web_copy_link&obrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==" },
+    { id: "v04", type: "video", category: "challenge",     title: "Challenge",       client: "One Education Center",  thumb: "assets/thumbs/oec-ellena-alena.jpg",   views: "",           link: "https://www.instagram.com/reel/Dd0gztDT5Xm/?utm_source=ig_web_copy_link&obrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==" },
+    { id: "v05", type: "video", category: "talking-heads", title: "Talking Heads",   client: "One Education Center",  thumb: "assets/thumbs/oec-trevor.jpg",         views: "",           link: "https://www.instagram.com/reel/Dds4n6Nz3de/?utm_source=ig_web_copy_link&cplk=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==" },
+    { id: "v06", type: "video", category: "talking-heads", title: "Talking Heads",   client: "One Education Center",  thumb: "assets/thumbs/oec-leander.jpg",        views: "",           link: "https://www.instagram.com/reel/Dc2mHC7Tt8s/?utm_source=ig_web_copy_link&psln=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==" },
+    { id: "v07", type: "video", category: "cinematic",     title: "Cinematic",       client: "One Education Center",  thumb: "assets/thumbs/oec-belajar.jpg",        views: "",           link: "https://www.instagram.com/reel/DcuiaZdzzbL/?utm_source=ig_web_copy_link&srtk=MzRlODBiNWFlZA==" }
   ],
 
   // Sesi Website: tampil "sedang dikembangkan" selama belum ada project web.

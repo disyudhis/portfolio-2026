@@ -62,6 +62,7 @@
     renderTestimonials(d);
     bindForm(d);
     bindTracking();
+    bindTheme();
   }
 
   function renderMarquee(d) {
@@ -134,7 +135,7 @@
     var hasWeb = d.projects.some(function (x) { return x.type === "web"; });
     $("#webWip").innerHTML = (d.web && !hasWeb)
       ? '<div class="wip"><span class="wip-tag">' + esc(d.web.status) + "</span><h3>" + esc(d.web.title) + "</h3><p>" + esc(d.web.desc) + '</p><div class="wip-bar" aria-hidden="true"></div>' +
-        '<a class="btn btn-ghost" target="_blank" rel="noopener" href="' + waLink(d, "Halo, aku mau tanya soal pembuatan website.") + '" data-track="wip-wa">Tanya soal website</a></div>'
+      '<a class="btn btn-ghost" target="_blank" rel="noopener" href="' + waLink(d, "Halo, aku mau tanya soal pembuatan website.") + '" data-track="wip-wa">Tanya soal website</a></div>'
       : "";
   }
 
@@ -319,6 +320,20 @@
         "Deadline: " + (f.get("deadline") || "belum ditentukan") + "\n" +
         "Detail: " + f.get("detail");
       window.open(waLink(d, text), "_blank", "noopener");
+    });
+  }
+
+  function bindTheme() {
+    var btn = $("#themeBtn"), root = document.documentElement, meta = document.querySelector('meta[name="theme-color"]');
+    function apply(t, save) {
+      root.setAttribute("data-theme", t);
+      btn.setAttribute("aria-label", t === "dark" ? "Ganti ke mode terang" : "Ganti ke mode gelap");
+      if (meta) meta.setAttribute("content", t === "dark" ? "#000000" : "#EAECF0");
+      if (save) { try { localStorage.setItem("theme", t); } catch (e) { } }
+    }
+    apply(root.getAttribute("data-theme") || "light", false);
+    btn.addEventListener("click", function () {
+      apply(root.getAttribute("data-theme") === "dark" ? "light" : "dark", true);
     });
   }
 
